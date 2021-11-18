@@ -1,6 +1,8 @@
 import spotipy
 import networkx as nx
 import matplotlib.pyplot as plt
+import csv
+
 from spotipy.oauth2 import SpotifyClientCredentials
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id="f6f2ad1a3118471691471fa533eff1f4", client_secret="40d8cd756cb4474dbab23bcc945528e0"))
@@ -53,15 +55,33 @@ def featGenerator(artist_id, artist_name):
 
 def buildNetwork(path):
     g = nx.read_edgelist(path, nodetype=str, create_using=nx.Graph())
-    print(g.edges(data=True))
-    nx.draw(g,with_labels=True)
+    #print(g.edges(data=True))
+    nx.draw(g,with_labels=False)
     plt.show()
+
+def computeScore(path):
+    g = nx.read_edgelist(path, nodetype=str, create_using=nx.Graph())
+    #print(nx.closeness_centrality(g))
+    print(nx.betweenness_centrality(g))
+    
+#creo csv: prova con solo il nome del file, poi aggiungeremo la struttura dati     
+def CreateCsv(filename) 
+    with open(filename, 'w', newline = '') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([a,b,c,d])
+
+
+    
+
+
+
 
 
 def main():
-    featGenerator("2YZyLoL8N0Wb9xBt1NhZWg", "Kendrick Lamar")
-    buildNetwork("/home/alberto/Desktop/lfn_project/network.txt")
-
+    #featGenerator("2YZyLoL8N0Wb9xBt1NhZWg", "Kendrick Lamar")
+    #buildNetwork("/home/alberto/Desktop/lfn_project/network.txt")
+    computeScore("/home/alberto/Desktop/lfn_project/network.txt")
+    
 
 if __name__ == "__main__":
     main()
