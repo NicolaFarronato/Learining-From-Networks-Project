@@ -1,7 +1,9 @@
+from networkx.classes.function import nodes
 import spotipy
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import ArtistFeatures
+import popularity
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -62,10 +64,16 @@ def buildNetwork(path):
 def computeScore(path):
     g = nx.read_edgelist(path, nodetype=str, create_using=nx.Graph())
     #print(nx.closeness_centrality(g))
-    print(nx.closeness_centrality(g))
+    ccs = nx.closeness_centrality(g)
+    AF = ArtistFeatures.ArtistFeatures(list(ccs))
+    AF.add_cc(ccs)
+    AF.create_csv("/Users/nicolafarronato/Desktop/prova/data.csv")
+    
     
 
-
+def computePopularity(artist_id):
+    # the popularity score is an integer
+    return spotify.artist(artist_id)['popularity']
     
 
 
@@ -76,6 +84,16 @@ def main():
     #featGenerator("2YZyLoL8N0Wb9xBt1NhZWg", "Kendrick Lamar")
     #buildNetwork("/Users/nicolafarronato/Desktop/prova/network.txt")
     computeScore("/Users/nicolafarronato/Desktop/prova/network.txt")
+    g = nx.read_edgelist("/Users/nicolafarronato/Desktop/prova/network.txt", nodetype=str, create_using=nx.Graph())
+    pop = []
+    artists = list(g.nodes._nodes)
+    for i in range (1,len(g.nodes)):
+        pop.append(computePopularity(artists[i]))
+    ccs = nx.closeness_centrality(g)
+    AF = ArtistFeatures.ArtistFeatures(list(ccs))
+    AF.add_pv(pop)
+    print(pop)
+
     
 
 if __name__ == "__main__":
