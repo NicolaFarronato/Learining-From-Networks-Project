@@ -1,2 +1,0 @@
-# Learining-From-Networks
-ciao
