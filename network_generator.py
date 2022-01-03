@@ -6,6 +6,9 @@ from ArtistFeatures import ArtistFeatures
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
+from NetworkManager import NetworkManager
+
+
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id="f6f2ad1a3118471691471fa533eff1f4", client_secret="40d8cd756cb4474dbab23bcc945528e0"))
 
 def featGenerator(artist_id, artist_name):
@@ -125,9 +128,14 @@ def computeNumTracks(artist_id):
 
 
 def main():
+    NM = NetworkManager()
+    #NM.featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang",1)
+    NM.featGenerator('0r1S7BCoaU5uGAgAWptbl9', 'Ski & Wok',1)
+    NM.writeNetwork("/Users/nicolafarronato/Desktop/prova/prova.txt")
+
     #featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang")
     # buildNetwork("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt")
-    computeScore("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt")
+    #computeScore("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt")
     #g = nx.read_edgelist("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt", nodetype=str, create_using=nx.Graph())
     #results = spotify.artist_albums((list(g.nodes._nodes)[1],'Ski & Wok'))
     #print(g)
