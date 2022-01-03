@@ -105,10 +105,12 @@ class NetworkManager:
         print('---------------------------------------------------------' +'\n')
 
     def buildNetworkFromTxt(self, path: str):
+        self.Graph_network.clear()
         self.Graph_network = nx.read_edgelist(
             path, nodetype=str, create_using=nx.Graph())
 
-    def getNetwork(self):
+    def buildGraphNetwork(self):
+        self.Graph_network.clear()
         self.Graph_network = nx.read_edgelist(
             self.Edges_list, nodetype=str, create_using=nx.Graph())
 
