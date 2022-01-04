@@ -130,7 +130,7 @@ def computeNumTracks(artist_id):
 def main():
     NM = NetworkManager()
     #NM.featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang",1)
-    NM.featGenerator('0r1S7BCoaU5uGAgAWptbl9', 'Ski & Wok',1)
+    NM.featGenerator('0r1S7BCoaU5uGAgAWptbl9', 'Ski & Wok',0)
     NM.writeNetwork("/Users/nicolafarronato/Desktop/prova/prova.txt")
 
     #featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang")
