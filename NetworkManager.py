@@ -23,24 +23,25 @@ class NetworkManager:
         pass
     
     # Metodi Pubblici
-    def featGenerator(self, artist_id: str, artist_name: str, max_depth: int):
+    def featGenerator(self, artist_id: str, artist_name: str, max_distance: int):
         # Init the two sets
         print('--------------------------------------------------------------' +'\n')
         print('-------------  Start Artist Featuring Generation -------------' +'\n')
+        print('--------------------------------------------------------------' +'\n')
         self.Edges_list.clear()
         artists = []
         done = []
-        depthReached = False
+        distReached = False
         # Starting node with (artist_id,artist_name and depth=0)
         artists.append((artist_id, artist_name,0))
         while artists:  
             artist = artists.pop(0)
-            if artist[2] >= max_depth:
-                if not depthReached:
-                    print('\n'+'--------------------------------------------------------------' +'\n')
-                    print('------------  Maximum depth reached: refinement --------------' +'\n')
-                    print('--------------------------------------------------------------' +'\n')                    
-                    depthReached = True         
+            if artist[2] >= max_distance:
+                if not distReached:
+                    print('\n'+'-----------------------------------------------------------------' +'\n')
+                    print('------------  Maximum distance reached: refinement --------------' +'\n')
+                    print('-----------------------------------------------------------------' +'\n')                    
+                    distReached = True         
                 print(artist[1]+ '('+str(artist[2])+')',end=" || ")
                 done.append(artist)
                 self._featRefine(artist,done,artists)  
@@ -48,17 +49,18 @@ class NetworkManager:
                 done.append(artist)
                 print(artist[1]+'('+str(artist[2])+')',end=" || ")
                 self._featSearch(artist,done,artists)   
-        if not depthReached:
-            print('\n'+'--------------------------------------------------------------' +'\n')
-            print('-----------------  Maximum depth NOT reached -----------------' +'\n')
+        if not distReached:
+            print('\n'+'-----------------------------------------------------------------' +'\n')
+            print('-----------------  Maximum distance  NOT reached -----------------' +'\n')
         #Done. Print statistics and return    
-        print('\n'+'-------------------------------------------------------------' +'\n')
+        print('\n'+'----------------------------------------------------------------' +'\n')
         print('Statistics : ' +'\n')
         print('Total numer of nodes : '+str(len(done)) +', \n')
-        for i in range(0,max_depth+1):
-            print('Nodes depth '+str(i)+' : '+str(operator.countOf([x[2] for x in done],i)) +' nodes, \n')
-        #print('Nodes depth '+str((max_depth+1))+' : '+ str(operator.countOf([x[2] for x in artists],max_depth+1)+1)+' nodes. \n')    
-        print('-------------------------------------------------------------' +'\n')
+        for i in range(0,max_distance+1):
+            print('Nodes distance '+str(i)+' : '+str(operator.countOf([x[2] for x in done],i)) +' nodes, \n')
+        #print('Nodes depth '+str((max_distance+1))+' : '+ str(operator.countOf([x[2] for x in artists],max_distance+1)+1)+' nodes. \n')    
+        print('----------------------------------------------------------------' +'\n')
+    
     def writeNetwork(self, path : str):
         print('---------------------------------------------------------' +'\n')
         print('---------------  Write Edges List to txt ----------------' +'\n')
@@ -85,13 +87,14 @@ class NetworkManager:
             except:
                 logging.error("Need a graph to use this method!!")
                 return
-        nx.draw(self.Graph_network, with_labels=labels)
+        options = {"node_size": 50, "linewidths": 0, "width": 0.1}
+        nx.draw(self.Graph_network, with_labels=labels, **options)
 
     #Metodi privati
     def _featSearch(self, artist_struct, done_set: list, artist_set:list):
         # nodo di partenza
         artist = artist_struct
-        act_depth = artist[2]
+        act_dist = artist[2]
         album_ids = []
         song_ids = []
         featurings = []
@@ -119,12 +122,12 @@ class NetworkManager:
             results = NetworkManager.SPOTIFY_MANAGER.track(song_ids[j])
             feat = results['artists']
             for k in range(len(feat)):
-                if ((feat[k]['id'], feat[k]['name']) not in featurings and feat[k]['id'] != artist[0]):
+                if ((feat[k]['id'], feat[k]['name']) not in featurings and feat[k]['name'] != artist[1]):
                     featurings.append((feat[k]['id'], feat[k]['name']))
                 # se l'artista x non è già stato processato o se sarà processato prossimamente allora...
-                if ((feat[k]['id'], feat[k]['name']) not in [x[0:2] for x in done_set] and 
-                    (feat[k]['id'], feat[k]['name']) not in [x[0:2] for x in artist_set]):
-                    artist_set.append((feat[k]['id'], feat[k]['name'],act_depth+1))
+                if ((feat[k]['name']) not in [x[1] for x in done_set] and 
+                    (feat[k]['name']) not in [x[1] for x in artist_set]):
+                    artist_set.append((feat[k]['id'], feat[k]['name'],act_dist+1))
         # Save the edge list for the artist processed with the featuring artists
         for j in range(len(featurings)):
             if (featurings[j][0] != artist[0]):
