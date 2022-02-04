@@ -5,7 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import operator
 import logging
-
+import time
 from spotipy.oauth2 import SpotifyClientCredentials
 
 
@@ -44,11 +44,24 @@ class NetworkManager:
                     distReached = True         
                 print(artist[1]+ '('+str(artist[2])+')',end=" || ")
                 done.append(artist)
-                self._featRefine(artist,done,artists)  
+                try:
+                    self._featRefine(artist,done,artists)  
+                except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
+                    logging.warning("Spotify is not working, lets wait a minute before continue.")
+                    time.sleep(30)
+                    continue
+                    
             else:
                 done.append(artist)
                 print(artist[1]+'('+str(artist[2])+')',end=" || ")
-                self._featSearch(artist,done,artists)   
+                try:
+                    self._featSearch(artist,done,artists)   
+                except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
+                    logging.warning("Spotify is not working, lets wait a minute before continue.")
+                    time.sleep(30)
+                    continue
+                
+                
         if not distReached:
             print('\n'+'-----------------------------------------------------------------' +'\n')
             print('-----------------  Maximum distance  NOT reached -----------------' +'\n')
