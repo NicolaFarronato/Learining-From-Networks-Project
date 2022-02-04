@@ -129,10 +129,18 @@ def computeNumTracks(artist_id):
 
 def main():
     NM = NetworkManager()
-    #NM.featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang",1)
-    NM.featGenerator('0r1S7BCoaU5uGAgAWptbl9', 'Ski & Wok',0)
-    NM.writeNetwork("/Users/nicolafarronato/Desktop/prova/prova.txt")
+    NM.featGenerator("0r1S7BCoaU5uGAgAWptbl9", "Ski & Wok",1)
+    edge_list_path = '/Users/nicolafarronato/Documents/GitHub/Learining-From-Networks/Graphs/kw_2.txt'
+    NM.buildNetworkFromTxt(edge_list_path)
+    graph = NM.Graph_network
+    #NM.plotGraph(False)
 
+    NM.getPopularityScores()
+    
+    
+    
+        
+    
     #featGenerator("4CuMwzDzEdlUJMEna38VQ0", "Dark Polo Gang")
     # buildNetwork("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt")
     #computeScore("/Users/nicolafarronato/Desktop/prova/network_dpg12.txt")

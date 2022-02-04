@@ -1,0 +1,152 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Example: Project Report
+%
+% Source: http://www.howtotex.com
+%
+% Feel free to distribute this example, but please keep the referral
+% to howtotex.com
+% Date: March 2011 
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Edit the title below to update the display in My Documents
+%\title{Project Report}
+%
+%%% Preamble
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{fourier}
+
+\usepackage[english]{babel}															% English language/hyphenation
+\usepackage[protrusion=true,expansion=true]{microtype}	
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage[pdftex]{graphicx}	
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\graphicspath{ {/Users/nicolafarronato/Desktop/} }
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\urlstyle{same}
+
+
+%%% Custom sectioning
+\usepackage{sectsty}
+\allsectionsfont{\centering \normalfont\scshape}
+
+%%% Custom headers/footers (fancyhdr package)
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}											% No page header
+\fancyfoot[L]{}											% Empty 
+\fancyfoot[C]{}											% Empty
+\fancyfoot[R]{\thepage}									% Pagenumbering
+\renewcommand{\headrulewidth}{0pt}			% Remove header underlines
+\renewcommand{\footrulewidth}{0pt}			% Remove footer underlines
+\setlength{\headheight}{13.6pt}
+
+%%% Equation and float numbering
+\numberwithin{equation}{section}		% Equationnumbering: section.eq#
+\numberwithin{figure}{section}			% Figurenumbering: section.fig#
+\numberwithin{table}{section}			% Tablenumbering: section.tab#
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 	% Horizontal rule
+
+\title{
+		%\vspace{-1in} 	
+		\usefont{OT1}{bch}{b}{n}
+		\normalfont \normalsize \textsc{\textcolor{NavyBlue}{Learning From Networks}} \\ [1pt]
+		\normalfont \normalsize \textsc{\textcolor{NavyBlue}{a.a. 2021/2022}} \\ [10pt]
+		\horrule{0.5pt} \\[0.4cm]
+		\huge \textcolor{NavyBlue}{Predicting Spotify’s Popularity Score Of An Artist Using Node Analytics} \\
+		\horrule{2pt} \\[0.2cm]
+}
+\author{
+		\normalfont 								\normalsize
+        Alberto Paiusco - 2006674\\[-3pt]		\normalsize
+        \normalfont 								\normalsize
+        Lorenzo Mantovan - 2006673\\[-3pt]		\normalsize
+        \normalfont 								\normalsize
+        Nicola Farronato - 2019296\\[-3pt]		\normalsize
+        \today
+}
+\date{}
+
+
+%%% Begin document
+\begin{document}
+\maketitle
+
+\section*{\textcolor{NavyBlue}{Motivation}}
+%\paragraph{\textbf{\textcolor{NavyBlue}{Motivation}}}
+ Our project idea is based on a simple motivation: we would like to analyze data obtained from tools that we use daily. Spotify is one of them: we use it when we need a light background music to face a study session, to put an energetic soundtrack when we train, or simply to listen to our favourite songs when we want to relax. The \textit{Spotipy} library allows to obtain a lot of interesting features (e.g about artists, tracks, playlist); we will focus on the popularity score associated with each artist. Such score is a number between 0 and 100 computed as follows:
+
+$$\text{Popularity}= \Bigl\lfloor  \frac{\text{ArtistTotalStreams}}{\text{MostListenedArtistTotalStreams}} $$ 
+
+
+
+\paragraph{\textbf{\textcolor{NavyBlue}{Data}}}
+Data are obtained using the python’s \textit{spotipy} library which allows to get information
+from Spotify. The documentation of \textit{spotipy} is avaiable at \href{https://spotipy.readthedocs.io/en/2.19.0/}{this link}. We created a program that starts from an artist creating the network of collaborations (artists are the nodes, the edges represent that the two artists have collaborated at least once). At every iteration the algorithm analyze every new musician “encountered” adding new nodes. In this brief example we ran the algorithm for a pre-set number of iterations, but we might let it run until it does not find a new artist to “analyze” obtaining a very large network.\\*
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{graph}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
+
+
+\section*{\textcolor{NavyBlue}{Method}}
+\paragraph{\textbf{\textcolor{NavyBlue}{Problem}}} In order to solve the problem we want to compute some centrality scores for each node and then use such features to train a ML algorithm able to predict the popularity score of a given artist. 
+\paragraph{\textbf{\textcolor{NavyBlue}{Algorithms}}} In order to compute the centrality scores we will use an exact method; if the size of the network will significantly change with respect to the starting artist, we are going to use some approximations. For our ML model we will use a Neural Network.
+
+\section*{\textcolor{NavyBlue}{Intended Experiments}}
+\paragraph{\textbf{\textcolor{NavyBlue}{Goals}}}
+  
+\begin{itemize}
+	\item Predict the popularity score of artists in a network with many nodes;
+    \item Check for which musical genres this type of prediction is reliable;
+    \item There is way to improve the prediction if there are not enough features? $[$EXTRA$]$. 
+\end{itemize}
+\paragraph{\textbf{\textcolor{NavyBlue}{Experiment machines}}}
+All the simulations will be carried out using our personal computers. The specifications are:
+\begin{table}[hb]
+\renewcommand{\arraystretch}{2}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{}       & \textbf{Desktop Pc}     & \textbf{ASUS Notebook}  & \textbf{MacBook Pro 16'' 2019} \\ \hline
+\textbf{Memory} & 16,0 GB DDR4            & 16,0 GB DDR3            & 16,0 GB DDR4                   \\ \hline
+\textbf{CPU} & Intel(R) Core(TM) i5-6600K CPU @ 3.50GHz 3.50 GHz & Intel(R) Core(TM) i7-4710HQ CPU @ 2.50GHz 2.50 GHz & 2,6 GHz Intel Core i7 6 core \\ \hline
+\textbf{GPU}    & NVIDIA GEFORCE GTX 1070 & NVIDIA GEFORCE GTX 850M & MD Radeon Pro 5300M            \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+%%% End document
+\end{document}
