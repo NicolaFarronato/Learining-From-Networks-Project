@@ -1,3 +1,4 @@
+from os import system
 from networkx.classes.function import is_empty, nodes
 from networkx.classes.graph import Graph
 import spotipy
@@ -6,6 +7,7 @@ import matplotlib.pyplot as plt
 import operator
 import logging
 import time
+import sys
 from spotipy.oauth2 import SpotifyClientCredentials
 
 
@@ -102,6 +104,31 @@ class NetworkManager:
                 return
         options = {"node_size": 50, "linewidths": 0, "width": 0.1}
         nx.draw(self.Graph_network, with_labels=labels, **options)
+
+    def getPopularityScores(self):
+        if self.Edges_list == [] and self.Graph_network == []:
+            logging.error(" You should have and edge list before! ")
+            return
+        print('--------------------------------------------------------------' +'\n')
+        print('------------  Start Artist Popularity Calculation ------------' +'\n')
+        print('--------------------------------------------------------------' +'\n')
+        popularities = []
+        n = len(self.Graph_network.nodes())
+        k = 0
+        for artist in self.Graph_network.nodes():
+            popularities.append(self.SPOTIFY_MANAGER.artist(artist)['popularity'])
+            k +=1
+            sys.stdout.write('\r')
+            j = (k + 1) / n
+            sys.stdout.write("[%-60s] %d%%" % ('='*int(60*j), 100*j))
+            sys.stdout.flush()
+            time.sleep(0.05)
+
+
+        return popularities
+        
+        
+        
 
     #Metodi privati
     def _featSearch(self, artist_struct, done_set: list, artist_set:list):

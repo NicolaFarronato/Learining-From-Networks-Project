@@ -5,7 +5,9 @@ import networkx as nx
 
 class ArtistFeatures:
     #Costruttore
-    def __init__(self,artistsIds :str):
+    def __init__(self,inputGraph):
+        artistsIds = list(inputGraph.nodes())
+        ArtistFeatures._graph = inputGraph
         ArtistFeatures.id = artistsIds
         ArtistFeatures.cc = ['nan' for i in range(len(artistsIds))]
         ArtistFeatures.bc = ['nan' for i in range(len(artistsIds))]
@@ -15,12 +17,14 @@ class ArtistFeatures:
         ArtistFeatures.num_tracks = ['nan' for i in range(len(artistsIds))]
     
     #Metodi pubblici   
-    def add_cc(self,closeness_centrality_vals):
+    def get_cc(self):
+        closeness_centrality_vals = nx.closeness_centrality(self._graph)
         del ArtistFeatures.cc[:]
         for i in ArtistFeatures.id:
             ArtistFeatures.cc.append(closeness_centrality_vals.get(i))
     
-    def add_bc(self,betweeness_centrality_vals):
+    def get_bc(self,):
+        betweeness_centrality_vals = nx.betweenness_centrality(self._graph)
         del ArtistFeatures.bc[:]
         for i in ArtistFeatures.id:
             ArtistFeatures.bc.append(betweeness_centrality_vals.get(i))
