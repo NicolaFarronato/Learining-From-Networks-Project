@@ -1,3 +1,4 @@
+
 from os import system
 from networkx.classes.function import is_empty, nodes
 from networkx.classes.graph import Graph
@@ -46,22 +47,26 @@ class NetworkManager:
                     distReached = True         
                 print(artist[1]+ '('+str(artist[2])+')',end=" || ")
                 done.append(artist)
-                try:
-                    self._featRefine(artist,done,artists)  
-                except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
-                    logging.warning("Spotify is not working, lets wait a minute before continue.")
-                    time.sleep(30)
-                    continue
+                success = False
+                while not success:
+                    try:
+                        self._featRefine(artist,done,artists)  
+                        success = True
+                    except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
+                        logging.warning("Spotify is not working, lets wait a minute before continue.")
+                        time.sleep(60)
                     
             else:
                 done.append(artist)
                 print(artist[1]+'('+str(artist[2])+')',end=" || ")
-                try:
-                    self._featSearch(artist,done,artists)   
-                except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
-                    logging.warning("Spotify is not working, lets wait a minute before continue.")
-                    time.sleep(30)
-                    continue
+                success = False
+                while not success:
+                    try:
+                        self._featSearch(artist,done,artists)  
+                        success = True 
+                    except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
+                        logging.warning("Spotify is not working, lets wait a minute before continue.")
+                        time.sleep(60)
                 
                 
         if not distReached:
@@ -116,16 +121,48 @@ class NetworkManager:
         n = len(self.Graph_network.nodes())
         k = 0
         for artist in self.Graph_network.nodes():
-            popularities.append(self.SPOTIFY_MANAGER.artist(artist)['popularity'])
+            success = False
+            while not success:
+                try:
+                    popularities.append(self.SPOTIFY_MANAGER.artist(artist)['popularity'])
+                    success = True
+                except :
+                    logging.warning("Spotify is not responding. Waiting 20s and trying again")
+                    time.sleep(20)
             k +=1
             sys.stdout.write('\r')
             j = (k + 1) / n
             sys.stdout.write("[%-60s] %d%%" % ('='*int(60*j), 100*j))
             sys.stdout.flush()
             time.sleep(0.05)
-
-
         return popularities
+    
+    def getFollowersNumber(self):
+        if self.Edges_list == [] and self.Graph_network == []:
+            logging.error(" You should have and edge list before! ")
+            return
+        print('--------------------------------------------------------------' +'\n')
+        print('------------  Start Artist Followers Calculation -------------' +'\n')
+        print('--------------------------------------------------------------' +'\n')
+        followers = []
+        n = len(self.Graph_network.nodes())
+        k = 0
+        for artist in self.Graph_network.nodes():
+            success = False
+            while (not success):
+                try:
+                    followers.append((self.SPOTIFY_MANAGER.artist(artist)['followers']['total']))
+                    success = True
+                except :
+                    logging.warning("Spotify is not responding. Waiting 20s and trying again")
+                    time.sleep(20)
+            k +=1
+            sys.stdout.write('\r')
+            j = (k + 1) / n
+            sys.stdout.write("[%-60s] %d%%" % ('='*int(60*j), 100*j))
+            sys.stdout.flush()
+            time.sleep(0.05)
+        return followers
         
         
         
