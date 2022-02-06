@@ -82,8 +82,8 @@ class NetworkManager:
         for i in range(0,max_distance+1):
             print('Nodes distance '+str(i)+' : '+str(operator.countOf([x[2] for x in done],i)) +' nodes, \n')
         #print('Nodes depth '+str((max_distance+1))+' : '+ str(operator.countOf([x[2] for x in artists],max_distance+1)+1)+' nodes. \n')  
-        print("Total elapsed time : %.2f" %elapsed)  
-        print("Elapsed time per artist : %.2f"%(elapsed/len(done)))
+        print("Total elapsed time : %.2f s" %elapsed)  
+        print("Elapsed time per artist : %.2f s"%(elapsed/len(done)))
         print('----------------------------------------------------------------' +'\n')
     
     def writeNetwork(self, path : str):
@@ -142,7 +142,7 @@ class NetworkManager:
             sys.stdout.flush()
             time.sleep(0.05)
         end = time.perf_counter()
-        print("Elapsed time : %.2f"%(end-start))
+        print("Elapsed time : %.2f s"%(end-start))
         return popularities
     
     def getFollowersNumber(self):
@@ -172,7 +172,7 @@ class NetworkManager:
             sys.stdout.flush()
             time.sleep(0.05)
         end = time.perf_counter()
-        print("Elapsed time : %.2f"%(end-start))
+        print("Elapsed time : %.2f s"%(end-start))
         return followers
         
         
