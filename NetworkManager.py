@@ -174,7 +174,24 @@ class NetworkManager:
         end = time.perf_counter()
         print("Elapsed time : %.2f s"%(end-start))
         return followers
-        
+
+    def getNumAlbums():
+        '''
+        nodes_num_albums = []
+
+        for i in range(G.number_of_nodes()):
+            results = spotify.artist_albums(nodes[i], album_type='album')
+            albums = results['items']
+            album_ids = []
+            while results['next']:
+                results = spotify.next(results)
+                albums.extend(results['items'])
+            for album in albums:
+                album_ids.append(album['id'])
+            nodes_num_albums.append(len(album_ids))
+
+        print(nodes_num_albums)
+        '''    
         
         
 
