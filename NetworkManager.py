@@ -31,11 +31,11 @@ class NetworkManager:
         print('--------------------------------------------------------------' +'\n')
         print('-------------  Start Artist Featuring Generation -------------' +'\n')
         print('--------------------------------------------------------------' +'\n')
-        start = time.perf_counter()
         self.Edges_list.clear()
         artists = []
         done = []
         distReached = False
+        
         # Starting node with (artist_id,artist_name and depth=0)
         artists.append((artist_id, artist_name,0))
         while artists:  
@@ -75,8 +75,6 @@ class NetworkManager:
             print('-----------------  Maximum distance  NOT reached -----------------' +'\n')
         #Done. Print statistics and return    
         print('\n'+'----------------------------------------------------------------' +'\n')
-        end = time.perf_counter()
-        elapsed = end-start
         print('Statistics : ' +'\n')
         print('Total numer of nodes : '+str(len(done)) +', \n')
         for i in range(0,max_distance+1):
@@ -84,6 +82,7 @@ class NetworkManager:
         #print('Nodes depth '+str((max_distance+1))+' : '+ str(operator.countOf([x[2] for x in artists],max_distance+1)+1)+' nodes. \n')  
         print("Total elapsed time : %.2f s" %elapsed)  
         print("Elapsed time per artist : %.2f s"%(elapsed/len(done)))
+
         print('----------------------------------------------------------------' +'\n')
     
     def writeNetwork(self, path : str):
@@ -122,7 +121,6 @@ class NetworkManager:
         print('--------------------------------------------------------------' +'\n')
         print('------------  Start Artist Popularity Calculation ------------' +'\n')
         print('--------------------------------------------------------------' +'\n')
-        start = time.perf_counter()
         popularities = []
         n = len(self.Graph_network.nodes())
         k = 0
@@ -141,8 +139,10 @@ class NetworkManager:
             sys.stdout.write("[%-60s] %d%%" % ('='*int(60*j), 100*j))
             sys.stdout.flush()
             time.sleep(0.05)
+
         end = time.perf_counter()
         print("Elapsed time : %.2f s"%(end-start))
+
         return popularities
     
     def getFollowersNumber(self):
@@ -152,7 +152,6 @@ class NetworkManager:
         print('--------------------------------------------------------------' +'\n')
         print('------------  Start Artist Followers Calculation -------------' +'\n')
         print('--------------------------------------------------------------' +'\n')
-        start = time.perf_counter()
         followers = []
         n = len(self.Graph_network.nodes())
         k = 0
