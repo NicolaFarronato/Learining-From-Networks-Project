@@ -28,6 +28,9 @@ class NetworkManager:
     # Metodi Pubblici
     def featGenerator(self, artist_id: str, artist_name: str, max_distance: int):
         # Init the two sets
+        if (max_distance == 0):
+            print("Edge List Empty. Return")
+            return
         print('--------------------------------------------------------------' +'\n')
         print('-------------  Start Artist Featuring Generation -------------' +'\n')
         print('--------------------------------------------------------------' +'\n')
@@ -35,7 +38,7 @@ class NetworkManager:
         artists = []
         done = []
         distReached = False
-        
+        start = time.perf_counter()
         # Starting node with (artist_id,artist_name and depth=0)
         artists.append((artist_id, artist_name,0))
         while artists:  
@@ -69,7 +72,8 @@ class NetworkManager:
                         logging.warning("Spotify is not working, lets wait a minute before continue.")
                         time.sleep(60)
                 
-                
+        end = time.perf_counter()
+        elapsed = end-start      
         if not distReached:
             print('\n'+'-----------------------------------------------------------------' +'\n')
             print('-----------------  Maximum distance  NOT reached -----------------' +'\n')
@@ -124,6 +128,7 @@ class NetworkManager:
         popularities = []
         n = len(self.Graph_network.nodes())
         k = 0
+        start = time.perf_counter()
         for artist in self.Graph_network.nodes():
             success = False
             while not success:
@@ -141,7 +146,7 @@ class NetworkManager:
             time.sleep(0.05)
 
         end = time.perf_counter()
-        print("Elapsed time : %.2f s"%(end-start))
+        print("/n Elapsed time : %.2f s"%(end-start))
 
         return popularities
     
@@ -152,6 +157,7 @@ class NetworkManager:
         print('--------------------------------------------------------------' +'\n')
         print('------------  Start Artist Followers Calculation -------------' +'\n')
         print('--------------------------------------------------------------' +'\n')
+        start = time.perf_counter()
         followers = []
         n = len(self.Graph_network.nodes())
         k = 0
@@ -171,7 +177,7 @@ class NetworkManager:
             sys.stdout.flush()
             time.sleep(0.05)
         end = time.perf_counter()
-        print("Elapsed time : %.2f s"%(end-start))
+        print("/n Elapsed time : %.2f s"%(end-start))
         return followers
 
     def getNumAlbums():
