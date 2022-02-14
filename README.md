@@ -13,3 +13,6 @@ Files Description:
 Folder Description:
 - Graphs : contains graphs structures in the form of a list of edges.
 - CSV : contains a csv file, created using ArtistFeatures class, that contains the features for the kw_2 graph.
+
+NOTES : 
+In the NetworkManager class there are the credential of Nicola Farronato for autenticate on spotify. Please make a responsable use.
