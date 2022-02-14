@@ -13,11 +13,14 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import os
 class NetworkManager:
+    
+    _CLIENT_ID ='' ## INSERT HERE YOUR CLIENT ID
+    _CLIENT_SECRET ='' ## INSERT HERE YOUR CLIENT SECRET
     # Public
     SPOTIFY_MANAGER = spotipy.Spotify(
         auth_manager=SpotifyClientCredentials(
-            client_id="d113c0801f184aa4bcd5ec95e367f39c",
-            client_secret="adeac6655ba74bfeb2752f4e0ca88af3"))
+            client_id=_CLIENT_ID,
+            client_secret=_CLIENT_SECRET))
     Graph_network = []
     Edges_list = []
     
