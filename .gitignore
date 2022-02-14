@@ -2,3 +2,4 @@ Main mio.ipynb
 .vscode/launch.json
 network_generator copy.py
 .vscode/settings.json
+.cache

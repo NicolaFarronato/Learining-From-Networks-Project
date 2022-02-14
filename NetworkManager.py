@@ -10,22 +10,22 @@ import logging
 import time
 import sys
 from spotipy.oauth2 import SpotifyClientCredentials
-
-
+from spotipy.oauth2 import SpotifyOAuth
+import os
 class NetworkManager:
-    # Pubblici
+    # Public
     SPOTIFY_MANAGER = spotipy.Spotify(
         auth_manager=SpotifyClientCredentials(
-            client_id="f6f2ad1a3118471691471fa533eff1f4",
-            client_secret="40d8cd756cb4474dbab23bcc945528e0"))
+            client_id="d113c0801f184aa4bcd5ec95e367f39c",
+            client_secret="adeac6655ba74bfeb2752f4e0ca88af3"))
     Graph_network = []
     Edges_list = []
     
-    # Costruttore
+    # ctor
     def __init__(self):
         pass
     
-    # Metodi Pubblici
+    # public methods
     def featGenerator(self, artist_id: str, artist_name: str, max_distance: int):
         # Init the two sets
         if (max_distance == 0):
@@ -59,7 +59,6 @@ class NetworkManager:
                     except :   #If we lose internet connection wait 30 seconds instead of loosing all the progresses
                         logging.warning("Spotify is not working, lets wait a minute before continue.")
                         time.sleep(60)
-                    
             else:
                 done.append(artist)
                 print(artist[1]+'('+str(artist[2])+')',end=" || ")
@@ -146,7 +145,7 @@ class NetworkManager:
             time.sleep(0.05)
 
         end = time.perf_counter()
-        print("/n Elapsed time : %.2f s"%(end-start))
+        print("\n Elapsed time : %.2f s"%(end-start))
 
         return popularities
     
@@ -177,38 +176,56 @@ class NetworkManager:
             sys.stdout.flush()
             time.sleep(0.05)
         end = time.perf_counter()
-        print("/n Elapsed time : %.2f s"%(end-start))
+        print("\n Elapsed time : %.2f s"%(end-start))
         return followers
 
-    def getNumAlbums():
-        '''
+    def getNumAlbums(self):
+        if self.Edges_list == [] and self.Graph_network == []:
+            logging.error(" You should have and edge list before! ")
+            return
+        print('--------------------------------------------------------------' +'\n')
+        print('------------  Start Number of Albums Calculation -------------' +'\n')
+        print('--------------------------------------------------------------' +'\n')
+        start = time.perf_counter()
         nodes_num_albums = []
-
-        for i in range(G.number_of_nodes()):
-            results = spotify.artist_albums(nodes[i], album_type='album')
-            albums = results['items']
-            album_ids = []
-            while results['next']:
-                results = spotify.next(results)
-                albums.extend(results['items'])
-            for album in albums:
-                album_ids.append(album['id'])
-            nodes_num_albums.append(len(album_ids))
-
-        print(nodes_num_albums)
-        '''    
+        n = len(self.Graph_network.nodes())
+        k = 0
+        for artist in self.Graph_network.nodes():
+            success = False
+            while not success:
+                try:
+                    results = self.SPOTIFY_MANAGER.artist_albums(artist, album_type='album')
+                    albums = results['items']
+                    album_ids = []
+                    while results['next']:
+                        results = self.SPOTIFY_MANAGER.next(results)
+                        albums.extend(results['items'])
+                    for album in albums:
+                        album_ids.append(album['id'])
+                    nodes_num_albums.append(len(album_ids))
+                    success = True
+                except :
+                    logging.warning("Spotify is not responding. Waiting 20s and trying again")
+                    time.sleep(20)
+            k +=1
+            sys.stdout.write('\r')
+            j = (k + 1) / n
+            sys.stdout.write("[%-60s] %d%%" % ('='*int(60*j), 100*j))
+            sys.stdout.flush()
+            time.sleep(0.05)
+        end = time.perf_counter()
+        print("\n Elapsed time : %.2f s"%(end-start))
+        return nodes_num_albums
         
         
 
-    #Metodi privati
-    def _featSearch(self, artist_struct, done_set: list, artist_set:list):
-        # nodo di partenza
+    #Private methods
+    def _featSearch(self, artist_struct, done_set: list, artists_set:list):
         artist = artist_struct
         act_dist = artist[2]
         album_ids = []
         song_ids = []
         featurings = []
-        # per ottenere lista id album per un artista
         results = NetworkManager.SPOTIFY_MANAGER.artist_albums(
             artist[0], album_type='album')
         albums = results['items']
@@ -227,28 +244,24 @@ class NetworkManager:
                 tracks.extend(results['items'])
             for track in tracks:
                 song_ids.append(track['id'])
-            # per ottenere featurings
         for j in range(len(song_ids)):
             results = NetworkManager.SPOTIFY_MANAGER.track(song_ids[j])
             feat = results['artists']
             for k in range(len(feat)):
                 if ((feat[k]['id'], feat[k]['name']) not in featurings and feat[k]['name'] != artist[1]):
                     featurings.append((feat[k]['id'], feat[k]['name']))
-                # se l'artista x non è già stato processato o se sarà processato prossimamente allora...
                 if ((feat[k]['name']) not in [x[1] for x in done_set] and 
-                    (feat[k]['name']) not in [x[1] for x in artist_set]):
-                    artist_set.append((feat[k]['id'], feat[k]['name'],act_dist+1))
+                    (feat[k]['name']) not in [x[1] for x in artists_set]):
+                    artists_set.append((feat[k]['id'], feat[k]['name'],act_dist+1))
         # Save the edge list for the artist processed with the featuring artists
         for j in range(len(featurings)):
             if (featurings[j][0] != artist[0]):
                 self.Edges_list.append((artist[0],featurings[j][0]))
-    def _featRefine(self, artist_struct, done_set: list, artist_set:list):
-        # nodo di partenza
+    def _featRefine(self, artist_struct, done_set: list, artists_set:list):
         artist = artist_struct
         album_ids = []
         song_ids = []
         featurings = []
-        # per ottenere lista id album per un artista
         results = NetworkManager.SPOTIFY_MANAGER.artist_albums(
             artist[0], album_type='album')
         albums = results['items']
@@ -257,7 +270,6 @@ class NetworkManager:
             albums.extend(results['items'])
         for album in albums:
             album_ids.append(album['id'])
-            # per ottenere lista canzoni in un albumm
         for j in range(len(album_ids)):
             results = NetworkManager.SPOTIFY_MANAGER.album_tracks(
                 album_ids[j])
@@ -267,13 +279,12 @@ class NetworkManager:
                 tracks.extend(results['items'])
             for track in tracks:
                 song_ids.append(track['id'])
-            # per ottenere featurings
         for j in range(len(song_ids)):
             results = NetworkManager.SPOTIFY_MANAGER.track(song_ids[j])
             feat = results['artists']
             for k in range(len(feat)):
                 if (((feat[k]['id'], feat[k]['name']) in [x[0:2] for x in done_set] or 
-                    (feat[k]['id'], feat[k]['name']) in [x[0:2] for x in artist_set]) and 
+                    (feat[k]['id'], feat[k]['name']) in [x[0:2] for x in artists_set]) and 
                     (feat[k]['id'] != artist[0])):
                     featurings.append((feat[k]['id'], feat[k]['name']))
         # Save the edge list for the artist processed with the featuring artists
