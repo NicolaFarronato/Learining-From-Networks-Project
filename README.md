@@ -1,4 +1,4 @@
-* LEARNING FROM NETWORK PROJECT 
+<h1> LEARNING FROM NETWORK PROJECT </h1>
 
 Needed Libraries : 
 - NetworkX
